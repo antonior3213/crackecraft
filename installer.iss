@@ -12,7 +12,7 @@ SolidCompression=yes
 WizardStyle=modern
 
 [Files]
-Source: "dist\CrackeCraft\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "dist\CrackeCraft.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\CrackeCraft"; Filename: "{app}\CrackeCraft.exe"

@@ -1,86 +1,69 @@
-# CrackeCraft
+# CrackeCraft APK Launcher
 
-Launcher de escritorio para **Minecraft: Java Edition** en Windows 10/11 y Linux. La implementación usa las APIs de lanzamiento de `minecraft-launcher-lib` para leer el catálogo Mojang, descargar/verificar Vanilla y construir el comando de juego. CrackeCraft no contiene archivos del juego.
+Launcher de escritorio para instalar y abrir una APK de Minecraft en un entorno Android. Funciona en Windows mediante ADB y en Linux mediante Waydroid o ADB. **No ejecuta una APK directamente en Windows/Linux ni incluye un emulador**: abre un emulador Android ya instalado en Windows, o Waydroid/otro Android con ADB en Linux.
 
-## Funciones implementadas
+## Usar en Windows
 
-- Interfaz oscura adaptable con Inicio, Versiones, Instalaciones, Mods, Ajustes y Cuenta.
-- Catálogo Mojang con lanzamientos estables y snapshots; instalación y reparación de archivos.
-- Perfiles separados: cada perfil conserva su directorio propio de mundos, ajustes y carpeta `mods`; bibliotecas y assets compartidos se guardan una sola vez.
-- Inicio de sesión Microsoft mediante navegador del sistema, OAuth con PKCE y comprobación de titularidad Minecraft. No hay modo offline/cracked.
-- Renovación de sesión. Los tokens se guardan en Windows Credential Manager o el almacén seguro del escritorio Linux mediante `keyring`; las contraseñas nunca se solicitan ni guardan.
-- Memoria, Java opcional, argumentos JVM, consola y registro local con filtrado de tokens.
-- Detección de Java del sistema; las versiones modernas de Minecraft incluyen la selección/descarga de runtime gestionada por `minecraft-launcher-lib`.
-- La sección Mods abre la carpeta de mods del perfil. Fabric y Forge no están habilitados en esta versión, por lo que no se presentan como funcionalidad operativa.
+1. Instala y abre un emulador Android que permita ADB, por ejemplo el emulador de Android Studio o uno de terceros.
+2. Habilita ADB/depuración en el emulador y acepta el aviso de autorización si aparece.
+3. Ejecuta `dist\CrackeCraft.exe`.
+4. Pulsa **Buscar dispositivos**. Si CrackeCraft no encuentra ADB, ve a Ajustes → **Buscar…** y selecciona `adb.exe` (Android SDK Platform-Tools o el ADB incluido con tu emulador).
+5. Selecciona el archivo `.apk`. Para Bedrock, el identificador predeterminado es `com.mojang.minecraftpe`.
+6. Selecciona el emulador conectado y pulsa **Instalar y jugar**.
 
-## Requisitos de inicio de sesión
+Una conexión ADB correcta aparece como `device` al ejecutar `adb devices`. Si aparecen varios destinos, escoge el emulador correcto en la lista. Una instalación nueva puede tardar. La guía oficial de Android documenta `adb devices` y `adb install` para emuladores y dispositivos conectados ([ADB](https://developer.android.com/tools/adb)).
 
-Registra una aplicación propia en Microsoft Entra:
+## Usar en Linux
 
-1. Habilita cuentas personales Microsoft en los tipos de cuenta compatibles.
-2. Añade la plataforma **Mobile and desktop applications** con redirect URI `http://localhost`.
-3. Habilita el flujo de cliente público y no crees/uses un client secret.
-4. Copia el Application (client) ID a **Ajustes → Microsoft App Client ID**.
+- **Waydroid:** instala, inicializa e inicia Waydroid. En modo automático CrackeCraft lo usa si encuentra el comando `waydroid`.
+- **Otro emulador/ADB:** instala Android SDK Platform-Tools, inicia el emulador con ADB habilitado y selecciona ADB en Ajustes si hace falta.
 
-Microsoft documenta el redirect localhost para clientes de escritorio. El launcher usa un puerto local efímero, `state` y PKCE. El servicio Microsoft/Minecraft también debe aceptar el registro de aplicación; si la API de Minecraft rechaza el cliente, la autenticación mostrará el error del servicio. Para jugar se necesita una cuenta con Minecraft: Java Edition.
+Selecciona la APK y el destino Android, y pulsa **Instalar y jugar**. Waydroid documenta los comandos `waydroid app install` y `waydroid app launch`, además de que algunas APK solo incluyen bibliotecas ARM y no funcionan en contenedores x86_64 ([instalar y ejecutar apps](https://docs.waydro.id/usage/install-and-run-android-applications)).
 
 ## Ejecutar desde el código
 
-Se requiere Python 3.10 o posterior. Desde la carpeta del proyecto:
+Se requiere Python 3.10+ y una sesión de escritorio compatible con Qt.
 
 ### Windows PowerShell
 
 ```powershell
 py -3 -m venv .venv
-.venv\Scripts\python.exe -m pip install --upgrade pip
 .venv\Scripts\python.exe -m pip install -e .
 .
 run-windows.bat
 ```
 
-### Ubuntu/Debian/Fedora
-
-Instala Python, `venv` y los paquetes de Qt que requiera tu distribución (por ejemplo `python3-venv` en Debian/Ubuntu):
+### Linux
 
 ```bash
 python3 -m venv .venv
-.venv/bin/python -m pip install --upgrade pip
 .venv/bin/python -m pip install -e .
 chmod +x run-linux.sh
 ./run-linux.sh
 ```
 
-En Linux se necesita una sesión de escritorio con Qt. Para guardar sesiones, `keyring` necesita el servicio de llaves de la sesión (Secret Service/libsecret o KWallet). Si no hay un almacén seguro, CrackeCraft no persiste el token y explica el problema.
-
 ## Compilar
 
-Los paquetes deben compilarse en el sistema operativo de destino.
+Compila en el sistema operativo de destino.
 
-### Windows y Setup.exe
+- **Windows:** ejecuta `build-windows.ps1`. Genera el ejecutable de un archivo `dist\CrackeCraft.exe`. Si Inno Setup 6 está instalado, también genera `dist\installer\CrackeCraft-Setup.exe` usando `installer.iss`.
+- **Linux:** `./build-linux.sh` genera `dist/CrackeCraft/`. Instala `appimagetool` y ejecuta `./build-appimage.sh` para crear un AppImage.
 
-Ejecuta `build-windows.ps1` en PowerShell. Crea `dist/CrackeCraft/`. Para generar el instalador de Windows, instala **Inno Setup 6** y compila `installer.iss`; el resultado se guarda en `dist/installer/CrackeCraft-Setup.exe`.
+El emulador Android debe instalarse por separado. No se distribuye Minecraft ni se elude el inicio de sesión del juego; la APK inicia su propio flujo de cuenta.
 
-### Linux portable y AppImage
+## Pruebas
 
-Ejecuta `./build-linux.sh` para producir `dist/CrackeCraft/`. Para AppImage, instala `appimagetool` en esa máquina y ejecuta `./build-appimage.sh`; genera `CrackeCraft-x86_64.AppImage`. PyInstaller/AppImage no pueden producir el ejecutable de Windows desde Linux ni viceversa.
+```powershell
+.venv\Scripts\python.exe -m unittest discover -s tests -v
+```
 
-## Estructura
+## Arquitectura
 
 ```text
 src/crackecraft/
-  app.py                 Inicio y configuración de Qt
-  config.py              Preferencias de aplicación
-  services/
-    auth.py              OAuth Microsoft y renovación
-    credential_store.py  Almacén seguro del sistema
-    minecraft.py         Catálogo, instalación y lanzamiento Vanilla
-  ui/main_window.py      Interfaz y navegación
-  workers.py             Tareas de red/instalación fuera del hilo visual
-  assets/hero.svg        Arte vectorial local
-packaging/               Icono y entrada de escritorio Linux
-tests/                   Pruebas de servicios
+  config.py              Preferencias Android/ADB
+  services/apk.py        Validación APK, descubrimiento ADB, instalación y lanzamiento
+  ui/main_window.py      Interfaz CrackeCraft
+  workers.py             Tareas de instalación fuera del hilo visual
+  assets/hero.svg        Ilustración local
 ```
-
-## Límites de esta versión
-
-Es un launcher Vanilla funcional de Minecraft Java. No instala Fabric, Forge ni mods por sí mismo; la carpeta Mods está separada por perfil para evitar mezclar datos. No se han generado binarios en este entorno Windows: AppImage debe generarse en Linux y el Setup.exe mediante PyInstaller/Inno Setup en Windows. La autenticación real requiere el Client ID configurado y aprobación del servicio Microsoft/Minecraft.
