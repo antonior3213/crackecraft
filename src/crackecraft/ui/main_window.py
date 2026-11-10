@@ -393,6 +393,7 @@ class MainWindow(QMainWindow):
     def _devices_loaded(self, result) -> None:
         devices, error = result
         self.devices = devices
+        self.device_message = error
         self.device_combo.clear()
         for serial, label in devices:
             self.device_combo.addItem(label, serial)
@@ -413,7 +414,7 @@ class MainWindow(QMainWindow):
         for _serial, label in self.devices:
             self.device_list.addItem(label)
         if not self.devices:
-            self.device_list.addItem("Sin dispositivos detectados. Inicia el emulador y pulsa Buscar de nuevo.")
+            self.device_list.addItem(self.device_message or "Sin dispositivos detectados. Inicia el emulador y pulsa Buscar de nuevo.")
 
     def _device_changed(self, _index: int) -> None:
         self._update_target_labels()

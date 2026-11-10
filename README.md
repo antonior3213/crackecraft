@@ -13,6 +13,16 @@ Launcher de escritorio para instalar y abrir una APK de Minecraft en un entorno 
 
 Una conexión ADB correcta aparece como `device` al ejecutar `adb devices`. Si aparecen varios destinos, escoge el emulador correcto en la lista. Una instalación nueva puede tardar. La guía oficial de Android documenta `adb devices` y `adb install` para emuladores y dispositivos conectados ([ADB](https://developer.android.com/tools/adb)).
 
+### Opción rápida en Windows: BlueStacks
+
+BlueStacks incluye el emulador Android, así que no hace falta crear un dispositivo virtual con Android Studio.
+
+1. Descarga e instala [BlueStacks 5](https://www.bluestacks.com/es/index.html) desde su sitio oficial.
+2. Abre BlueStacks y, desde su barra lateral, pulsa **Instalar APK**. Elige tu archivo `.apk` (también puedes arrastrarlo a la ventana). Esto instala y abre el juego directamente en BlueStacks; no necesitas ADB ni CrackeCraft para esta opción.
+3. Para instalar desde CrackeCraft: en BlueStacks abre **Ajustes → Avanzado** y activa **Android Debug Bridge (ADB)**. En CrackeCraft, abre **Ajustes**, selecciona `C:\Program Files\BlueStacks_nxt\HD-Adb.exe` (si BlueStacks se instaló en otra carpeta, localiza ahí `HD-Adb.exe`), guarda y pulsa **Buscar de nuevo** en **Dispositivo Android**. Cuando aparezca el dispositivo, selecciona la APK y pulsa **Instalar y jugar**.
+
+La ruta de ADB indicada es la habitual de BlueStacks 5 y puede variar según dónde se instaló. Consulta las instrucciones oficiales para [instalar BlueStacks](https://support.bluestacks.com/hc/es/articles/360061525271-C%C3%B3mo-descargar-e-instalar-BlueStacks-5) y [activar ADB](https://support.bluestacks.com/hc/es/articles/23925869130381-C%C3%B3mo-habilitar-Android-Debug-Bridge-en-BlueStacks-5).
+
 ## Usar en Linux
 
 - **Waydroid:** instala, inicializa e inicia Waydroid. En modo automático CrackeCraft lo usa si encuentra el comando `waydroid`.
