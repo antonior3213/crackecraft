@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=CrackeCraft
+Comment=Launcher de Minecraft Java Edition
+Exec=crackecraft
+Icon=crackecraft
+Terminal=false
+Categories=Game;

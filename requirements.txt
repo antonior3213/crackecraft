@@ -1,0 +1,5 @@
+PySide6>=6.8,<7
+minecraft-launcher-lib>=8.0,<9
+keyring>=25,<27
+psutil>=6,<8
+secretstorage>=3.2; sys_platform == "linux"
